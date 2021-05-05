@@ -1,0 +1,95 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test {
+    public static void main(String[] args) {
+        Trie t = new Trie();
+        t.setRoot(new TrieNode());
+        t.insert("amit");
+        t.insert("ami");
+        t.insert("sumit");
+        t.insert("saurav");
+        System.out.println(t.search("amit"));
+        t.find(t.getRoot(), "su");
+
+    }
+}
+
+class TrieNode {
+    private boolean isLeaf;
+    private Map<Character, TrieNode> child = new HashMap();
+
+    public boolean isLeaf() {
+        return isLeaf;
+    }
+
+    public void setLeaf(boolean isLeaf) {
+        this.isLeaf = isLeaf;
+    }
+
+    public Map<Character, TrieNode> getChild() {
+        return child;
+    }
+
+    public void setChild(Map<Character, TrieNode> child) {
+        this.child = child;
+    }
+}
+
+class Trie {
+    private TrieNode root;
+
+    public void insert(String word) {
+        TrieNode current = root;
+        for (char l : word.toCharArray()) {
+            current = current.getChild().computeIfAbsent(l, c -> new TrieNode());
+        }
+        current.setLeaf(true);
+    }
+
+    public boolean search(String word) {
+        TrieNode current = root;
+        for (char ch : word.toCharArray()) {
+            TrieNode node = current.getChild().get(ch);
+            if (node == null) {
+                return false;
+            }
+            current = node;
+        }
+        return current.isLeaf();
+    }
+
+    public void display(TrieNode node, String word) {
+        if (node == null)
+            return;
+        if (node.isLeaf()) {
+            System.out.println(word);
+        }
+        for (Character c : node.getChild().keySet()) {
+            if (null != node.getChild().get(c)) {
+                display(node.getChild().get(c), word + c);
+            }
+        }
+    }
+
+    public void find(TrieNode node, String word) {
+        if (node == null)
+            return;
+        TrieNode current = node;
+        for (Character c : word.toCharArray()) {
+            current = current.getChild().get(c);
+            if (null == current) {
+                return;
+            }
+        }
+        display(current, word);
+    }
+
+    public TrieNode getRoot() {
+        return root;
+    }
+
+    public void setRoot(TrieNode root) {
+        this.root = root;
+    }
+}
